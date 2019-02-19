@@ -1,28 +1,42 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
+import AddProduct from './components/AddProduct';
+import ProductsList from './components/ProductsList';
+import SingleProduct from './components/SingleProduct';
 import './App.css';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
+const App = () => {
+  const [products, setProducts] = useState([]);
+
+  const addProduct = product => setProducts([...products, product]);
+  const deleteProduct = index => {
+    setProducts(products.filter((p, i) => i !== index));
+  };
+
+  return (
+    <Router>
+      <div id="app">
+        <aside>
+          <Link to={'/'}>Products</Link>
+          <Link to={'/add-product'}>Add product</Link>
+        </aside>
+        <main>
+          <Route
+            exact
+            path="/"
+            render={({ history }) => <ProductsList products={products} deleteProduct={deleteProduct} history={history} />}
           >
-            Learn React
-          </a>
-        </header>
+          </Route>
+          <Route
+            path="/add-product"
+            render={({ history }) => <AddProduct addProduct={addProduct} history={history} />}
+          >
+          </Route>
+          <Route path="/product/:slug" component={SingleProduct}></Route>
+        </main>
       </div>
-    );
-  }
-}
+    </Router>
+  );
+};
 
 export default App;
