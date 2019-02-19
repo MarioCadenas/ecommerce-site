@@ -32,7 +32,11 @@ const App = () => {
             render={({ history }) => <AddProduct addProduct={addProduct} history={history} />}
           >
           </Route>
-          <Route path="/product/:slug" component={SingleProduct}></Route>
+          <Route
+            path="/product/:slug"
+            render={({ match }) => (<SingleProduct product={products.find(p => p.slug === match.params.slug)} />)}
+          >
+          </Route>
         </main>
       </div>
     </Router>
