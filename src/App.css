@@ -69,3 +69,19 @@ button {
 img {
   max-width: 200px;
 }
+
+table.cart tr,
+table.cart th,
+table.cart td {
+  border: 1px solid #333;
+  padding: 10px;
+}
+table.cart {
+  margin: 0 auto;
+}
+
+table.cart button {
+  padding: 10px 40px;
+  background-color: lightgreen;
+  border-color: gray;
+}
