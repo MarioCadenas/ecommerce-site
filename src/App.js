@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
 import AddProduct from './components/AddProduct';
 import ProductsList from './components/ProductsList';
@@ -6,23 +6,34 @@ import SingleProduct from './components/SingleProduct';
 import Cart from './components/Cart';
 import './App.css';
 
+const persist = (key, value) => {
+  localStorage.setItem(key, JSON.stringify(value));
+  return value;
+};
+
 const App = () => {
   const [cart, setCart] = useState([]);
   const [products, setProducts] = useState([]);
 
-  const addProduct = product => setProducts([...products, product]);
-  const deleteProduct = index => setProducts(products.filter((p, i) => i !== index));
+  const loadStorage = () => {
+    setProducts(JSON.parse(localStorage.getItem('products')) || []);
+    setCart(JSON.parse(localStorage.getItem('cart')) || []);
+  };
+  const addProduct = (product) => setProducts(persist('products', [...products, product]));
+  const deleteProduct = (index) => setProducts(persist('products', products.filter((p, i) => i !== index)));
   const addToCart = ({ product, quantity }) => {
     if (!cart.length || !cart.some(({ product: { slug } }) => slug === product.slug)) {
-      return setCart([...cart, { product, quantity }]);
+      return setCart(persist('cart', [...cart, { product, quantity }]));
     }
 
-    return setCart(cart.map(item => (
+    return setCart(persist('cart', cart.map(item => (
       item.product.slug === product.slug
        ? { ...item, quantity: item.quantity + quantity }
        : item
-    )));
+    ))));
   };
+
+  useEffect(loadStorage, []);
 
   return (
     <Router>
