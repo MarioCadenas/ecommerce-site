@@ -19,7 +19,14 @@ const App = () => {
     setProducts(JSON.parse(localStorage.getItem('products')) || []);
     setCart(JSON.parse(localStorage.getItem('cart')) || []);
   };
-  const addProduct = (product) => setProducts(persist('products', [...products, product]));
+  const addProduct = (product) => {
+    if (products.some(({ slug }) => slug === product.slug)) {
+      return false;
+    }
+
+    setProducts(persist('products', [...products, product]));
+    return true;
+  };
   const deleteProduct = (index) => setProducts(persist('products', products.filter((p, i) => i !== index)));
   const addToCart = ({ product, quantity }) => {
     if (!cart.length || !cart.some(({ product: { slug } }) => slug === product.slug)) {

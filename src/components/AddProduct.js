@@ -31,6 +31,7 @@ const AddProduct = (props) => {
   const [price, setPrice] = useState(0);
   const [description, setDescription] = useState('');
   const [image, setImage] = useState('');
+  const [shouldShowErrorMessage, setShouldShowErrorMessage] = useState(false);
 
   const handleChangeName = ({ target: { value }}) => setName(value);
   const handleChangePrice = ({ target: { value }}) => setPrice(value);
@@ -38,14 +39,21 @@ const AddProduct = (props) => {
   const handleChangeImage = ({ target: { value }}) => setImage(value);
   const addProduct = (e) => {
     e.preventDefault();
-    props.addProduct({ name, price, description, image, slug: slugify(name) });
-    props.history.push('/');
+    const productAdded = props.addProduct({ name, price, description, image, slug: slugify(name) });
+
+    if (!productAdded) {
+      return setShouldShowErrorMessage(true);
+    }
+
+    setShouldShowErrorMessage(false);
+    return props.history.push('/');
   };
 
   return (
     <div>
       <form onSubmit={addProduct}>
         <h1>Add Product</h1>
+        {shouldShowErrorMessage && <p>Product already exists!</p>}
         <div>
           <label>Name:</label>
           <input required onChange={handleChangeName} />
