@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
 import AddProduct from './components/AddProduct';
 import ProductsList from './components/ProductsList';
 import SingleProduct from './components/SingleProduct';
 import Cart from './components/Cart';
 import './App.css';
+import NotFound from './components/404';
 
 const persist = (key, value) => {
   localStorage.setItem(key, JSON.stringify(value));
@@ -51,27 +52,33 @@ const App = () => {
         </aside>
         <main>
           <Cart cart={cart} />
-          <Route
-            exact
-            path="/"
-            render={({ history }) => <ProductsList products={products} deleteProduct={deleteProduct} history={history} />}
-          >
-          </Route>
-          <Route
-            path="/add-product"
-            render={({ history }) => <AddProduct addProduct={addProduct} history={history} />}
-          >
-          </Route>
-          <Route
-            path="/product/:slug"
-            render={({ match }) => (
-                <SingleProduct
-                  product={products.find(p => p.slug === match.params.slug)}
-                  addToCart={addToCart}
-                />
-              )}
-          >
-          </Route>
+          <Switch>
+            <Route
+              exact
+              path="/"
+              render={({ history }) => <ProductsList products={products} deleteProduct={deleteProduct} history={history} />}
+            >
+            </Route>
+            <Route
+              exact
+              path="/add-product"
+              render={({ history }) => <AddProduct addProduct={addProduct} history={history} />}
+            >
+            </Route>
+            <Route
+              exact
+              path="/product/:slug"
+              render={({ match }) => (
+                  <SingleProduct
+                    product={products.find(p => p.slug === match.params.slug)}
+                    addToCart={addToCart}
+                  />
+                )
+              }
+            >
+            </Route>
+            <Route component={NotFound} />
+          </Switch>
         </main>
       </div>
     </Router>
